@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="grid">
+  <div class="card stat"><b>{{ stats.clients }}</b><span>Clients</span></div>
+  <div class="card stat"><b>{{ stats.workouts }}</b><span>Workouts logged</span></div>
+  <div class="card stat"><b>{{ stats.avg_adherence }}%</b><span>Average adherence</span></div>
+</div>
+<section class="card">
+  <h2>Clients by programme</h2>
+  <table>{% for r in stats.by_program %}<tr><td>{{ r.program }}</td><td>{{ r.n }}</td></tr>
+  {% else %}<tr><td>No clients yet.</td></tr>{% endfor %}</table>
+</section>
+{% endblock %}

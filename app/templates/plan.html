@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Generated programme — {{ client.name }} ({{ level }})</h1>
+<div class="card scroll"><table><tr><th>Day</th><th>Exercise</th><th>Sets</th><th>Reps</th></tr>
+{% for p in plan %}<tr><td>{{ p.day }}</td><td>{{ p.exercise }}</td><td>{{ p.sets }}</td><td>{{ p.reps }}</td></tr>{% endfor %}
+</table></div>
+<a class="btn ghost" href="{{ url_for('clients.detail', client_id=client.id) }}">Back</a>
+{% endblock %}

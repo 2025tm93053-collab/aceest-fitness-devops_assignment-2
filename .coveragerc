@@ -1,0 +1,7 @@
+[run]
+source = .
+relative_files = True
+omit =
+    tests/*
+    wsgi.py
+    .venv/*

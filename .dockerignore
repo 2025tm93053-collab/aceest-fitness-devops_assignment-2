@@ -1,0 +1,16 @@
+.git
+.gitignore
+.venv
+venv
+__pycache__
+*.pyc
+instance
+*.db
+.coverage
+coverage.xml
+test-results.xml
+.pytest_cache
+Jenkinsfile
+docs
+k8s
+*.md

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row"><h1>{{ client.name }}</h1><span>
+<a class="btn ghost" href="{{ url_for('clients.edit_client', client_id=client.id) }}">Edit</a>
+<a class="btn ghost" href="{{ url_for('clients.report_pdf', client_id=client.id) }}">PDF report</a>
+{% if g.user['role'] == 'Admin' %}
+<form method="post" class="inline" action="{{ url_for('clients.delete', client_id=client.id) }}" onsubmit="return confirm('Delete this client?')">
+<input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn danger">Delete</button></form>{% endif %}
+</span></div>
+<div class="grid">
+  <div class="card"><h2>Profile</h2>
+  <p>Age {{ client.age or '-' }} · {{ client.height or '-' }} cm · {{ client.weight or '-' }} kg</p>
+  <p>Programme: <b style="color:{{ program.get('color', '#fff') }}">{{ client.program }}</b></p>
+  <p>Calories: <b>{{ client.calories or '-' }}</b> kcal/day</p>
+  <p>Target: {{ client.target_weight or '-' }} kg · {{ client.target_adherence or '-' }}% adherence</p>
+  <p>Membership: <span class="pill s-{{ status|replace(' ', '-')|lower }}">{{ status }}</span> {{ client.membership_expiry or '' }}</p>
+  {% if bmi %}<p>BMI {{ bmi[0] }} ({{ bmi[1] }}) — {{ bmi[2] }}</p>{% endif %}</div>
+  <div class="card"><h2>Weekly training plan</h2><pre>{{ program.get('workout', '') }}</pre></div>
+  <div class="card"><h2>Nutrition plan</h2><pre>{{ program.get('diet', '') }}</pre></div>
+</div>
+<div class="grid">
+  <div class="card"><h2>Weekly adherence</h2>{{ adherence_chart or 'No progress logged yet.' }}</div>
+  <div class="card"><h2>Weight trend</h2>{{ weight_chart or 'No weight metrics yet.' }}</div>
+</div>
+<div class="grid">
+<form method="post" class="card" action="{{ url_for('tracking.add_progress', client_id=client.id) }}">
+  <h2>Log weekly adherence</h2><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Week start <input type="date" name="week_start"></label>
+  <label>Adherence % <input name="adherence" required></label><button class="btn">Save</button></form>
+<form method="post" class="card" action="{{ url_for('tracking.add_metrics', client_id=client.id) }}">
+  <h2>Log body metrics</h2><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Date <input type="date" name="date"></label><label>Weight (kg) <input name="weight"></label>
+  <label>Waist (cm) <input name="waist"></label><label>Body fat (%) <input name="bodyfat"></label><button class="btn">Save</button></form>
+<form method="post" class="card" action="{{ url_for('tracking.add_workout', client_id=client.id) }}">
+  <h2>Log workout</h2><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Date <input type="date" name="date"></label>
+  <label>Type <select name="workout_type">{% for t in workout_types %}<option>{{ t }}</option>{% endfor %}</select></label>
+  <label>Duration (min) <input name="duration_min" value="60"></label>
+  <label>Notes <input name="notes"></label>
+  <label>Exercise <input name="ex_name"></label>
+  <label>Sets <input name="ex_sets" value="3"></label><label>Reps <input name="ex_reps" value="10"></label>
+  <label>Weight (kg) <input name="ex_weight" value="0"></label><button class="btn">Save</button></form>
+</div>
+<section class="card"><h2>Workout history</h2>
+{% for w in workouts %}<p><b>{{ w.workout.date }}</b> · {{ w.workout.workout_type }} · {{ w.workout.duration_min }} min {{ w.workout.notes or '' }}</p>
+<ul>{% for e in w.exercises %}<li>{{ e.name }} {{ e.sets }}×{{ e.reps }} @ {{ e.weight }} kg</li>{% endfor %}</ul>
+{% else %}<p>No workouts logged.</p>{% endfor %}</section>
+<form method="post" class="card" action="{{ url_for('clients.generate', client_id=client.id) }}">
+  <h2>Generate programme (extension of v3.1.2 generator)</h2><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Experience <select name="level">{% for l in levels %}<option>{{ l }}</option>{% endfor %}</select></label><button class="btn">Generate</button></form>
+{% endblock %}

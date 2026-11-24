@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Programmes</h1>
+<div class="grid">{% for name, p in programs.items() %}
+<div class="card"><h2 style="color:{{ p.color }}">{{ name }}</h2><p>{{ p.desc }} · {{ p.factor }} kcal/kg</p>
+<h3>Training</h3><pre>{{ p.workout }}</pre><h3>Nutrition</h3><pre>{{ p.diet }}</pre></div>{% endfor %}</div>
+{% endblock %}

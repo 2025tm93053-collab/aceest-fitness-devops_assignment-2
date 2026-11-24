@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ 'Edit' if client.get('id') else 'New' }} client</h1>
+{% for e in errors %}<div class="flash error">{{ e }}</div>{% endfor %}
+<form method="post" class="card formgrid">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Name <input name="name" value="{{ client.get('name') or '' }}" required maxlength="80"></label>
+  <label>Age <input name="age" value="{{ client.get('age') or '' }}"></label>
+  <label>Height (cm) <input name="height" value="{{ client.get('height') or '' }}"></label>
+  <label>Weight (kg) <input name="weight" value="{{ client.get('weight') or '' }}"></label>
+  <label>Programme <select name="program">
+    {% for p in programs %}<option {{ 'selected' if client.get('program') == p }}>{{ p }}</option>{% endfor %}
+  </select></label>
+  <label>Target weight (kg) <input name="target_weight" value="{{ client.get('target_weight') or '' }}"></label>
+  <label>Target adherence (%) <input name="target_adherence" value="{{ client.get('target_adherence') or '' }}"></label>
+  <label>Membership expiry <input type="date" name="membership_expiry" value="{{ client.get('membership_expiry') or '' }}"></label>
+  <label class="wide">Coach notes <input name="notes" value="{{ client.get('notes') or '' }}"></label>
+  <button class="btn">Save client</button>
+</form>
+{% endblock %}
